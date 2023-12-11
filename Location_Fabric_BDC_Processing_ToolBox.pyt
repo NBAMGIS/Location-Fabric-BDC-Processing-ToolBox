@@ -1,22 +1,34 @@
 # -*- coding: utf-8 -*-
 #------------------------------------------------------------------------------
 # metadata
-__name__            = 'Location_Fabric_BDC_Processing_ToolBox.pyt'
+__name__            = 'Location_Fabric_BDC_Processing_ToolBox'
 __alias__           = 'Location Fabric And BDC Processing ToolBox'
 __author__          = 'ahamptonTIA'
 __credits__         = ['ahamptonTIA']
-__version__         = '0.0.2'
+__version__         = '0.0.3'
 __maintainer__      = 'ahamptonTIA'
 __email__           = 'https://github.com/ahamptonTIA'
+__github_url__      = "https://github.com/your-username/your-project"
 __status__          = 'Alpha'
 __create_date__     = '20231011'  
-__version_date__    = '20231114'
+__version_date__    = '20231215'
 __info__ = \
     '''
     Description:
-        The Location Fabric BDC Processing ToolBox is a collection of 
+        The Location Fabric BDC Processing Toolbox is a collection of 
         ArcGIS python tools which make processing large volume 
-        Location Fabric and FCC BDC data possible within ArcGIS Pro. 
+        Location Fabric and FCC BDC data more streamlined and capable
+        within ArcGIS Pro.
+
+        Tools:
+        
+        1. Create Service Level Dataset:
+            Creates a point layer or table representing the highest
+            reported service levels defined by NTIA BEAD program as
+            reliable technologies which include Copper Wire, Coaxial
+            Cable/HFC, Optical Carrier/Fiber to the Premises,
+            Licensed Terrestrial Fixed Wireless and, Licensed-by-Rule
+            Terrestrial Fixed Wireless. See tool metadata for more info.
     '''
 #----------------------------------------------------------------------------
 
@@ -28,17 +40,34 @@ from arcgis.features import GeoAccessor, GeoSeriesAccessor
 #----------------------------------------------------------------------------
 
 def clean_df_memory(df):
-    """Clears and releases memory used by pandas dataframes.
+    """Clears and releases memory used by pandas dataframes
+    using the garbage collector.
+
     Parameters:
     -----------
     df: pandas.DataFrame or a list of dataframes, required
         DataFrames to be removed from memory
-    Returns
+
+    Returns:
     -------
         None
-    """    
-    del(df)
-    # Manually trigger the garbage collector to release memory
+    """
+
+    # Check input type: DataFrame or list of DataFrames
+    if isinstance(df, pd.DataFrame):
+        # Delete DataFrame object
+        del df
+    elif isinstance(df, list):
+        # Loop through elements in list
+        for d in df:
+            # Check if element is a DataFrame
+            if isinstance(d, pd.DataFrame):
+                # Delete DataFrame object
+                del d
+    else:
+        raise TypeError("Input must be a pandas DataFrame or a list of DataFrames")
+
+    # Trigger garbage collection for memory release
     gc.collect()
 
 #----------------------------------------------------------------------------
@@ -110,7 +139,7 @@ def get_default_dir():
     Returns
     -------
         _dir : str
-            Path to the default default folder.
+            Path to the default folder.
     """    
     try:
         aprx = arcpy.mp.ArcGISProject('CURRENT')
@@ -121,7 +150,7 @@ def get_default_dir():
 
 #----------------------------------------------------------------------------
 
-def get_defualt_output_name(parameters=[], workspace=None):
+def get_default_output_name(parameters=[], workspace=None):
     """
     Gets the file names of two parameters and concatenates the
     string values to return a valid feature class name given the
@@ -134,7 +163,7 @@ def get_defualt_output_name(parameters=[], workspace=None):
             The workspace path 
     Returns:
     -----------
-        A string containing the validated defualt feature or table
+        A string containing the validated default feature or table
         name based on two input file names.
     """
 
@@ -201,8 +230,10 @@ def get_nearest_date(date_object, list_of_dates, max_offset=None):
         list_of_dates : list, required
             A list of datetime.datetime objects.
         max_offset : int, optional
-            The max off set in days.  If no dates
-            fall within this range, none will be returned
+            The max off set in days.  This is the range of
+            days to look for a version of the fabric.
+            If no version dates fall within this range,
+            none will be returned
     Returns
     -------
         A datetime.datetime object representing the closest date in the list of dates.
@@ -220,7 +251,7 @@ def get_nearest_date(date_object, list_of_dates, max_offset=None):
     if max_offset:
         delta = abs(date_object - closest_date)
         if delta.days > max_offset:
-            arcpy.AddWarning('No dates found within specified range!') 
+            arcpy.AddWarning('No fabric version/dates found within specified range!') 
             return None
 
     return closest_date
@@ -339,14 +370,15 @@ def download_zip(url, out_path, headers=None, session=None, chunk_size=128, debu
             Default, new session will be created
         chunk_size: int, optional
             Max data size per chunk/stream
-            Defualt, 128
+            Default, 128
         debug : Boolean, optional
             Option to print all messages        
     Returns
     -------
         None                                   
     """    
-    
+
+
     try:
         if debug:
             arcpy.AddMessage(f'\t-Requesting data from: {url}')
@@ -356,9 +388,14 @@ def download_zip(url, out_path, headers=None, session=None, chunk_size=128, debu
             r = requests.get(url, headers=headers, stream=True)
         with open(out_path, 'wb') as fd:
             for chunk in r.iter_content(chunk_size=chunk_size):
-                fd.write(chunk)    
-    except:
-        arcpy.AddError(f'Failed to download zip: {url}')
+                fd.write(chunk)
+    except requests.exceptions.RequestException as err:
+        arcpy.AddError(f'Failed to download zip: {url} - Error: {err}')
+    except Exception as err:
+        arcpy.AddError(f'Unexpected error during download: {err}')
+    finally:
+        if session is None:
+            r.close()
 
 #----------------------------------------------------------------------------
 
@@ -403,7 +440,7 @@ def get_fcc_bdc_data(fabric_version, state, tech_codes=None,
         # create a requests session 
         if not _session:
             _session = requests.session()
-        # set the defualt headers for the FCC Broadband Map Download homepage
+        # set the default headers for the FCC Broadband Map Download homepage
         headers =   {
                     "accept": "text/html",
                     "User-Agent": "ArcGIS Python- ",
@@ -460,8 +497,8 @@ def get_fcc_bdc_data(fabric_version, state, tech_codes=None,
                                               "%Y-%m-%dT%H:%M:%S.%fZ"
                                               )
 
-        f_date_str = fabric_version.strftime("%Y%m%d")
-        bdc_date_str = bdc_date.strftime("%Y%m%d")
+        fabric_date_str = fabric_version.strftime("%Y%m%d")
+        bdc_update_date_str = bdc_date.strftime("%Y%m%d")
         
         arcpy.AddMessage(f'BDC data current as of: {bdc_date.date().isoformat()}')
         
@@ -489,10 +526,10 @@ def get_fcc_bdc_data(fabric_version, state, tech_codes=None,
                             ]
 
         # download the zip files
-        itr_cnt = 1
+        iter_cnt = 1
         for i in filtered_file_set:
             url = f'{dl_url_base}/{i["id"]}/{file_numb_id}'
-            arcpy.AddMessage(f'Downloading: ({itr_cnt}) of {(len(filtered_file_set))} for state fips:{state}')
+            arcpy.AddMessage(f'Downloading: ({iter_cnt}) of {(len(filtered_file_set))} for state fips:{state}')
             arcpy.AddMessage(f'\t-{i["file_name"]}')
             zip_path = os.path.join(download_dir, f'{i["file_name"]}.csv.zip' )
             download_zip(url,
@@ -503,11 +540,11 @@ def get_fcc_bdc_data(fabric_version, state, tech_codes=None,
                          debug=debug
                          )
             zips.append(zip_path)
-            itr_cnt += 1
+            iter_cnt += 1
         arcpy.AddMessage(f'Total files downloaded: {len(zips)} for state fips:{state}')
 
         
-        return (f_date_str, bdc_date_str, zips)
+        return (fabric_date_str, bdc_update_date_str, zips)
 
     except InvalidFabric:
         arcpy.AddError('''The input location fabric file is invlaid\n
@@ -533,7 +570,7 @@ def read_bdc_data(zipped_csv_files, tech_codes):
             List of FCC BDC tech codes (int) to download. 
     Returns
     -------
-        bdc_df : pandas.DataFrame
+        bdc_data_df : pandas.DataFrame
             A single concat dataframe of filtered BDC data                                 
     """
     if not bool(tech_codes):
@@ -582,16 +619,16 @@ def read_bdc_data(zipped_csv_files, tech_codes):
     if len(dataframes) > 0:
         if len(dataframes) > 1:
             # Concatenate the list of BDC DataFrames into a single BDC DataFrame
-            bdc_df = pd.concat(dataframes)
+            bdc_data_df = pd.concat(dataframes)
         elif len(dataframes) == 1:
-            bdc_df = dataframes[0].copy(deep=True)
+            bdc_data_df = dataframes[0].copy(deep=True)
     
         # Clear initial file read dataframes to conserve resources/memeory
         clean_df_memory(dataframes)
 
         # Print a count of BDC records 
-        arcpy.AddMessage(f"Relevant BDC record count:  {len(bdc_df):,}")
-        return bdc_df
+        arcpy.AddMessage(f"Relevant BDC record count:  {len(bdc_data_df):,}")
+        return bdc_data_df
     else:
         arcpy.AddWarning(f"No BDC records found!")
         return None
@@ -613,7 +650,7 @@ def read_location_fabric(loc_fab_path, columns=None, bsl_flag=True):
             True false to return only bsl True records
     Returns
     -------
-        loc_fab_df : pandas.DataFrame
+        location_fabric_df : pandas.DataFrame
             A single dataframe of filtered location fabric data                                 
     """    
     # Create a list of columns to read.
@@ -633,7 +670,7 @@ def read_location_fabric(loc_fab_path, columns=None, bsl_flag=True):
         read_columns = columns + ['bsl_flag']
             
     # Read the un-zipped Location Fabric CSV file into a DataFrame
-    loc_fab_df = pd.read_csv(
+    location_fabric_df = pd.read_csv(
                              loc_fab_path, 
                              dtype=str,
                              usecols=read_columns
@@ -641,12 +678,12 @@ def read_location_fabric(loc_fab_path, columns=None, bsl_flag=True):
 
     # Filter to ensure only BSL's are included in the analysis
     if bsl_flag: 
-        loc_fab_df = loc_fab_df[loc_fab_df['bsl_flag']=='True']   
+        location_fabric_df = location_fabric_df[location_fabric_df['bsl_flag']=='True']   
 
-    loc_fab_df = loc_fab_df[columns]
+    location_fabric_df = location_fabric_df[columns]
     # Print a count  of BSL records
-    arcpy.AddMessage(f"Total BSL's:  {len(loc_fab_df):,}")
-    return loc_fab_df
+    arcpy.AddMessage(f"Total BSL's:  {len(location_fabric_df):,}")
+    return location_fabric_df
 
 #----------------------------------------------------------------------------
 
@@ -715,7 +752,7 @@ def calculate_service_level(row):
         return -1      
 
 #----------------------------------------------------------------------------
-def get_bsl_max_service_levels(loc_fab_df, bdc_df):
+def get_bsl_max_service_levels(location_fabric_df, bdc_data_df):
     """Function takes in the locatoin fabric and bdc data as
     pandas dataframes and calls calculate_service_level() to 
     calculate the max service level per location based on 25/3/1 
@@ -748,14 +785,14 @@ def get_bsl_max_service_levels(loc_fab_df, bdc_df):
     arcpy.AddMessage('Determining max service levels by location')
     # Some BSL's may not have a service level reported within the BDC data
     # Left join the Location Fabric BSL to the BDC dataset, Nulls will be labled as "Unserved"
-    df = loc_fab_df.merge(bdc_df, on='location_id', how='left', suffixes=('', '_df2_'))
+    df = location_fabric_df.merge(bdc_data_df, on='location_id', how='left', suffixes=('', '_df2_'))
 
     # Remove columns duplicated in the join
     dup_cols = [c for c in df.columns if c.endswith('_df2_')]
     df = df.drop(columns=dup_cols)
 
     # Clear up some memmory by removing the BDC and location fabric dataframes
-    clean_df_memory([bdc_df])
+    clean_df_memory([bdc_data_df])
 
     # Apply the calculate_service_level function to each row in the DataFrame
     # This creates a new column called "enum_max_service_level" 
@@ -780,6 +817,7 @@ def get_bsl_max_service_levels(loc_fab_df, bdc_df):
             
 class InvalidFabric(Exception):
     pass
+
 #----------------------------------------------------------------------------
     
 class Toolbox(object):
@@ -788,7 +826,12 @@ class Toolbox(object):
         .pyt file)."""
         self.label = "Location_Fabric_BDC_Toolbox"
         self.alias = "Location Fabric BDC Toolbox"
-
+        self.description = '''
+                            The Location Fabric BDC Processing Toolbox is a collection of 
+                            ArcGIS python tools which make processing large volume 
+                            Location Fabric and FCC BDC data more streamlined and capable
+                            within ArcGIS Pro.
+                           '''
         # List of tool classes associated with this toolbox
         self.tools = [create_service_level_dataset]
 
@@ -797,15 +840,21 @@ class Toolbox(object):
 class create_service_level_dataset(object):
     def __init__(self):
         """Define the tool (tool name is BroadbandDataJoin)"""
-        self.toolname = "CreateServiceLevelDataset"
+        self.toolname = "create_service_level_dataset"
 
-        self.label = "Create Service Level Dataset"
+        self.label = "1. Create Service Level Dataset"
         self.description = """Creates a point layer or table representing the highest
-                           reported service levels defined by NTIA BEAD program as
-                           reliable technologies which include Copper Wire,Coaxial
-                           Cable/HFC, Optical Carrier/Fiber to the Premises,
-                           Licensed Terrestrial Fixed Wireless and , Licensed-by-Rule
-                           Terrestrial Fixed Wireless."""
+                            reported service levels defined by NTIA BEAD program as
+                            reliable technologies which include Copper Wire, Coaxial
+                            Cable/HFC, Optical Carrier/Fiber to the Premises,
+                            Licensed Terrestrial Fixed Wireless and, Licensed-by-Rule
+                            Terrestrial Fixed Wireless. The input data must be a csv
+                            containing the CostQuest fabric locations to be analyzed.
+                            The outputs can be a spatial dataset (Featureclass or
+                            shapefile) or a table (GDB table or CSV). For spatial outputs,
+                            using a GDB featureclass rather than a shapefile will have
+                            better results as there are size restrictions (2 GB) and
+                            limits the column name length of shapefiles."""
 
         self.default_cols = [
                             'latitude',
@@ -934,46 +983,46 @@ class create_service_level_dataset(object):
             # collelct the metadata needed to request the matching bdc data
             zipped_csv_files = []
             for i in fabric_vers:
-                f_date_str, bdc_date_str, zips = get_fcc_bdc_data(i['fcc_rel'],
+                fabric_date_str, bdc_update_date_str, zips = get_fcc_bdc_data(i['fcc_rel'],
                                                                   i['state_fips'],
                                                                   tech_codes)
                 if bool(zips):
                     zipped_csv_files.extend(zips)
 
             # set the output layer name and alias
-            out_alias = f'Service Levels: BDC update({bdc_date_str}), Location Fabric({f_date_str})'
-            out_name_fmt = f'Service Levels Fabic{f_date_str}_BDC{bdc_date_str}'
+            output_alias = f'Service Levels: BDC update({bdc_update_date_str}), Location Fabric({fabric_date_str})'
+            output_name_fmt = f'Service Levels Fabic{fabric_date_str}_BDC{bdc_update_date_str}'
             
             # set the output layer name
-            out_name = get_defualt_output_name([out_name_fmt],
+            out_name = get_default_output_name([output_name_fmt],
                                                 wksp)
                         
             # read the location fabric data and the BDC data into dataframes 
-            bdc_df = read_bdc_data(zipped_csv_files, tech_codes)
+            bdc_data_df = read_bdc_data(zipped_csv_files, tech_codes)
 
-            if bdc_df is None: 
+            if bdc_data_df is None: 
                 raise InvalidFabric(fabric_version)
 
             # read the fabric location id's
-            loc_fab_df = read_location_fabric(loc_fab_path)
+            location_fabric_df = read_location_fabric(loc_fab_path)
 
             # generate the service level tiers based on the fabric and current BDC data
-            bsl_max_srvc_lvls_df = get_bsl_max_service_levels(loc_fab_df, bdc_df)
+            bsl_max_srvc_lvls_df = get_bsl_max_service_levels(location_fabric_df, bdc_data_df)
 
             # set the output columns
             fabric_out_cols = list(set(include_cols + self.default_cols))
             srvc_out_cols =[c for c in bsl_max_srvc_lvls_df.columns.tolist()
-                            if c not in list(set(loc_fab_df.columns.tolist()
-                                                 + bdc_df.columns.tolist()))]
+                            if c not in list(set(location_fabric_df.columns.tolist()
+                                                 + bdc_data_df.columns.tolist()))]
             
-            # if non defualt columns are selected, re-read the fabric
+            # if non default columns are selected, re-read the fabric
             if sorted(include_cols) != sorted(self.default_cols):
                 include_cols = list(set(fabric_out_cols + ['location_id']))
-                loc_fab_df = read_location_fabric(loc_fab_path,
+                location_fabric_df = read_location_fabric(loc_fab_path,
                                                   columns=include_cols)
             
             # join the farbic to the service level data
-            bsl_max_srvc_lvls_df = loc_fab_df.merge(bsl_max_srvc_lvls_df,  
+            bsl_max_srvc_lvls_df = location_fabric_df.merge(bsl_max_srvc_lvls_df,  
                                                     on='location_id',
                                                     how='left',
                                                     suffixes=('', '_df2_'))
@@ -988,7 +1037,7 @@ class create_service_level_dataset(object):
 
            
             # clear up memory
-            clean_df_memory([loc_fab_df])
+            clean_df_memory([location_fabric_df])
 
             arcpy.AddMessage(f'Saving results...')
             # set the output name
@@ -1030,7 +1079,7 @@ class create_service_level_dataset(object):
             
             # set the item alias for gdb items
             if wksp_type != 'FileSystem':
-                arcpy.AlterAliasName(out_path, out_alias)
+                arcpy.AlterAliasName(out_path, output_alias)
 
             arcpy.AddMessage(f'Results saved to: {out_path}')
 
