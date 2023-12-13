@@ -6,25 +6,26 @@ __formatName__      = 'ArcToolbox Toolbox'
 __name__            = 'Location_Fabric_BDC_Processing_ToolBox'
 __alias__           = 'Location Fabric And BDC Processing ToolBox'
 __author__          = 'ahamptonTIA'
-__credits__         = ['ahamptonTIA']
+__credits__         = [__author__]
 __version__         = '0.0.5'
-__maintainer__      = 'ahamptonTIA'
+__maintainer__      = __author__
 __email__           = 'https://github.com/ahamptonTIA'
-__org__             = 'National Telecommunications and Information Administration (NTIA)'   
+__org__             = 'National Telecommunications and Information Administration (NTIA)'
+__subOrg__          = 'Performance & Data Analytics'
 __org_email__       = 'nbam@ntia.gov'
-__github_url__      = 'https://github.com/ahamptonTIA/Location_Fabric_BDC_Processing_ToolBox'
-__status__          = 'Alpha'
+__orgGitHub__       = 'https://nbamgis.github.io/NTIA-Performance-and-Data-Analytics-on-GitHub'
+__github_url__      = f'https://github.com/{__author__}/{__name__}'
+__status__          = 'Beta'
 __create_date__     = '20231011'  
-__version_date__    = '20231214'
+__version_date__    = '20231213'
 __ArcGISFormat__    = '1.0'
 __searchKeys__      = ['BDC', 'Location Fabric', 'NTIA', 'FCC']
-__idCreditStr__     = f'''<b>Point of Contact (POC):</b> {__org__}
-                          <b>Organization:</b> {__org__} - Performance & Data Analytics
-                          <b>Email:</b> {__org_email__}
+__idCreditStr__     = f'''<b>Point of Contact (POC):</b> {__subOrg__}
+                          <b>Organization:</b> {__org__}
+                          <b>Email:</b> <a href="mailto:{__org_email__}">{__org_email__}</a>
                           <b>Additional Credits:</b> pyt_meta project, a python toolbox metadata automation package.
                               See: <a href="https://github.com/GeoCodable/pyt_meta" target="_blank" STYLE="text-decoration:underline;">pyt_meta</a>
                         '''
-__orgGitHub__       = '<b><em>For additional toolbox documentation and updates see: <a href="https://nbamgis.github.io/NTIA-Performance-and-Data-Analytics-on-GitHub/" target="_blank" STYLE="text-decoration:underline;">NTIA-Performance and Data Analytics on GitHub</a></em></b>'
 __SyncOnce__        = 'TRUE'
 __ArcGISProfile__   = 'ItemDescription'
 __license__  = \
@@ -1791,7 +1792,9 @@ class Toolbox(object):
         """Define the toolbox (the name of the toolbox is the name of the.pyt file)."""
         self.label = __name__
         self.alias = __alias__
-        self.description = f'{__info__} \n {__orgGitHub__}'
+        self.description = f'''{__info__}
+                                <b><em>For additional toolbox documentation and updates see: <a href="{__orgGitHub__}" target="_blank" STYLE="text-decoration:underline;">NTIA-Performance and Data Analytics on GitHub</a></em></b>
+                            '''
         self.CreaDate = __create_date__
         self.ArcGISFormat = __ArcGISFormat__
         self.SyncOnce = __SyncOnce__
@@ -1828,7 +1831,7 @@ class create_service_level_dataset(object):
         data will contain the selected fabric columns and the resultant
         service level data.
 
-        {__orgGitHub__}
+        <b><em>For additional toolbox documentation and updates see: <a href="{__orgGitHub__}" target="_blank" STYLE="text-decoration:underline;">NTIA-Performance and Data Analytics on GitHub</a></em></b>
         
         <b>*Note:</b>
         <em>An internet connection is required as the tool will send</em>
@@ -2163,7 +2166,7 @@ class create_fabric_features(object):
         self.description = __tools__[1]
         self.usage = f"""{__tools__[1]}
 
-        {__orgGitHub__}
+        <b><em>For additional toolbox documentation and updates see: <a href="{__orgGitHub__}" target="_blank" STYLE="text-decoration:underline;">NTIA-Performance and Data Analytics on GitHub</a></em></b>
         
         <b>*Note:</b>
             <em>Only location fabric records with the bsl_flag = True will be included in the output.</em>
@@ -2356,5 +2359,6 @@ class create_fabric_features(object):
         return
     
     #------------------------------------------------------------------------
+    
 # generate toolbox and tool xml metadata files
 tb_meta = create_tb_meta(__file__, True)
