@@ -7,7 +7,7 @@ __name__            = 'Location_Fabric_BDC_Processing_ToolBox'
 __alias__           = 'Location Fabric And BDC Processing ToolBox'
 __author__          = 'ahamptonTIA'
 __credits__         = ['ahamptonTIA']
-__version__         = '0.0.4'
+__version__         = '0.0.5'
 __maintainer__      = 'ahamptonTIA'
 __email__           = 'https://github.com/ahamptonTIA'
 __org__             = 'National Telecommunications and Information Administration (NTIA)'   
@@ -15,18 +15,21 @@ __org_email__       = 'nbam@ntia.gov'
 __github_url__      = 'https://github.com/ahamptonTIA/Location_Fabric_BDC_Processing_ToolBox'
 __status__          = 'Alpha'
 __create_date__     = '20231011'  
-__version_date__    = '20231212'
+__version_date__    = '20231214'
 __ArcGISFormat__    = '1.0'
 __searchKeys__      = ['BDC', 'Location Fabric', 'NTIA', 'FCC']
-__idCreditStr__     = f'''Point of Contact (POC): {__org__}
-                          Organization: {__org__} - Performance & Data Analytics
-                          Email: {__org_email__}
-                          Additional Credits" pyt_meta project for the automated toolbox metadata generation. See: https://github.com/GeoCodable/pyt_meta'''
+__idCreditStr__     = f'''<b>Point of Contact (POC):</b> {__org__}
+                          <b>Organization:</b> {__org__} - Performance & Data Analytics
+                          <b>Email:</b> {__org_email__}
+                          <b>Additional Credits:</b> pyt_meta project, a python toolbox metadata automation package.
+                              See: <a href="https://github.com/GeoCodable/pyt_meta" target="_blank" STYLE="text-decoration:underline;">pyt_meta</a>
+                        '''
+__orgGitHub__       = '<b><em>For additional toolbox documentation and updates see: <a href="https://nbamgis.github.io/NTIA-Performance-and-Data-Analytics-on-GitHub/" target="_blank" STYLE="text-decoration:underline;">NTIA-Performance and Data Analytics on GitHub</a></em></b>'
 __SyncOnce__        = 'TRUE'
 __ArcGISProfile__   = 'ItemDescription'
 __license__  = \
     """
-    SOFTWARE DISCLAIMER / RELEASE:
+    <b>Software Disclaimer/Release:</b>
         This software was developed by employees of the National Telecommunications
         and Information Administration (NTIA), an agency of the Federal Government
         and is provided to you as a public service. Pursuant to Title 15 United States
@@ -53,6 +56,14 @@ __license__  = \
         Please provide appropriate acknowledgments of NTIA's creation of the software in any
         copies or derivative works of this software.
     """
+__data_restrictions__ = \
+    '''
+    <b>Data Restrictions:</b>
+        Prior to sharing results, please verify the output dataset fields/columns
+        meet the distribution requirements in accordance with your organization’s signed
+        license agreement with CostQuest Associates.
+        See: <a href="https://help.bdc.fcc.gov/hc/en-us/articles/10419121200923-How-Entities-Can-Access-the-Location-Fabric-" target="_blank" STYLE="text-decoration:underline;">Why Do I Need a Fabric License?</a>          
+    '''
 __info__ = \
     '''
     Description:
@@ -68,8 +79,13 @@ __tools__ = [
         reliable technologies which include Copper Wire, Coaxial
         Cable/HFC, Optical Carrier/Fiber to the Premises,
         Licensed Terrestrial Fixed Wireless and, Licensed-by-Rule
-        Terrestrial Fixed Wireless. See tool metadata for more info.
+        Terrestrial Fixed Wireless. 
+        ''',
         '''
+        Creates a point layer from a location fabric dataset using
+        user specified fields for output.
+        '''
+        
     ]
 #----------------------------------------------------------------------------
 
@@ -219,8 +235,10 @@ def get_default_output_name(parameters=[], workspace=None):
         name based on two input file names.
     """
 
-    s = '_'.join(parameters)
-
+    if len(parameters) > 1:
+        s = '_'.join(parameters)
+    else:
+        s = parameters[0]
     if not bool(workspace):
         workspace = get_default_gdb()
         
@@ -1699,7 +1717,6 @@ class toolboxMetadata(object):
         if (not os.path.exists(out_path)) or self.overwrite:
             t = et_root(xml_root)
             t.write(out_path, encoding="utf-8", xml_declaration=True)
-            print(out_path)
         return
     
     # --------------------------------------------------------------------------
@@ -1774,7 +1791,7 @@ class Toolbox(object):
         """Define the toolbox (the name of the toolbox is the name of the.pyt file)."""
         self.label = __name__
         self.alias = __alias__
-        self.description = __info__
+        self.description = f'{__info__} \n {__orgGitHub__}'
         self.CreaDate = __create_date__
         self.ArcGISFormat = __ArcGISFormat__
         self.SyncOnce = __SyncOnce__
@@ -1785,19 +1802,19 @@ class Toolbox(object):
         self.searchKeys = __searchKeys__
         self.idPurp = self.description
         self.idCredit = __idCreditStr__
-        self.useLimit = __license__
+        self.useLimit = f'\n\n {__data_restrictions__} \n {__license__}'
         self.formatName = __formatName__
         self.mdDateSt = __version_date__
         
         # List of tool classes associated with this toolbox
-        self.tools = [create_service_level_dataset]
+        self.tools = [create_fabric_features, create_service_level_dataset]
 
 #----------------------------------------------------------------------------
         
 class create_service_level_dataset(object):
     def __init__(self):
         """Define the tool (tool name is BroadbandDataJoin)"""
-        self.label = "1. Create Service Level Dataset"
+        self.label = "2. Create Service Level Dataset"
         self.alias = "createServiceLevelDataset"
 
         self.description = __tools__[0]
@@ -1807,9 +1824,73 @@ class create_service_level_dataset(object):
         (Featureclass or shapefile) or a table (GDB table or CSV).
         For spatial outputs, using a GDB featureclass rather than a
         shapefile will have better results as there are size restrictions
-        (2 GB) and limits the column name length of shapefiles. Teh output
+        (2 GB) and limits the column name length of shapefiles. The output
         data will contain the selected fabric columns and the resultant
-        service level data."""
+        service level data.
+
+        {__orgGitHub__}
+        
+        <b>*Note:</b>
+        <em>An internet connection is required as the tool will send</em>
+        <em>requests for  data to the <a href="https://broadbandmap.fcc.gov/data-download/nationwide-data?" target="_blank" STYLE="text-decoration:underline;">FCC National Broadband Map</a></em>   
+
+        <b>*Note:</b>
+        <em>Only location fabric records with the bsl_flag = True will be included in the output.</em>
+            
+        {__data_restrictions__}
+        
+        Service Level Criteria:
+        i. How does the BEAD program define an “unserved” location?
+        Section I.C.bb. of the NOFO defines unserved locations as locations
+        lacking reliable broadband service or with broadband service offering
+        speeds below 25 megabits per second (Mbps) downstream/3 Mbps upstream
+        at a latency of 100 milliseconds or less. Reliable broadband means
+        broadband service that the Broadband DATA Maps show is accessible to
+        a location via fiber-optic technology; Cable Modem/ Hybrid fiber-coaxial
+        technology; digital subscriber line technology; or terrestrial fixed wireless
+        technology utilizing entirely licensed spectrum or using a hybrid of licensed
+        and unlicensed spectrum. Locations that are served by satellite or purely
+        unlicensed spectrum will also be considered unserved. 
+
+        See: <a href="https://broadbandusa.ntia.gov/sites/default/files/2022-06/BEAD-FAQs.pdf" target="_blank" STYLE="text-decoration:underline;">BEAD FAQ’s</a>                  
+
+        ii. How does the BEAD program define an “underserved” location?
+        Section I.C.cc. of the NOFO defines underserved locations as locations
+        that are identified as having access to reliable broadband service of
+        at least 25 Mbps downstream/3 Mbps upstream but less than 100 Mbps
+        downstream/20 Mbps upstream at a latency of 100 milliseconds or less.
+        Reliable broadband means broadband service that the Broadband DATA Maps
+        show is accessible to a location via fiber-optic technology;
+        Cable Modem/Hybrid fiber-coaxial technology; digital subscriber line
+        technology; or terrestrial fixed wireless technology utilizing entirely
+        licensed spectrum or using a hybrid of licensed and unlicensed spectrum. 
+        ed.  
+
+        See: <a href="https://broadbandusa.ntia.gov/sites/default/files/2022-06/BEAD-FAQs.pdf" target="_blank" STYLE="text-decoration:underline;">BEAD FAQ’s</a>
+
+
+        iii. Applied Service Level Criteria:
+
+        Based on the definition of "Reliable broadband" stated above, NTIA includes
+        technology codes listed below in the analysis of a location's max service level.
+        BDC codes for "Reliable broadband" deployed technology types:
+            •	10 : Copper Wire
+            •	40 : Coaxial Cable / HFC
+            •	50 : Optical Carrier / Fiber to the Premises
+            •	71 : Licensed Terrestrial Fixed Wireless
+            •	72 : Licensed-by-Rule Terrestrial Fixed Wireless
+
+        Based on the FCC definition of "low latency" in the BDC data specification,
+        NTIA classifies service availability with latency above 100 milliseconds as unserved.
+        The BDC dataset indicates low latency status with Boolean codes:
+            •	0 : False (Not low latency - above 100 milliseconds)
+            •	1 : True (low latency - at or less than 100 milliseconds)
+        Resulting Service Levels Defined:
+            •	Unserved: Speeds below 25/3 Mbps or NULL OR without low_latency (low_latency=0)
+            •	Underserved: Speeds at or above 25/3 Mbps, but Below 100/20 Mbps with low_latency (low_latency=1)
+            •	Served: Service Level at or above 100/20 Mbps with low_latency (low_latency=1)
+        See: <a href="https://us-fcc.app.box.com/v/bdc-data-downloads-output" target="_blank" STYLE="text-decoration:underline;">FCC's Data Spec. for BDC Public Data Downloads</a>
+        """
 
         self.CreaDate = __create_date__
         self.ArcGISFormat = __ArcGISFormat__
@@ -1821,7 +1902,7 @@ class create_service_level_dataset(object):
         self.idPurp = self.description
         self.searchKeys = __searchKeys__
         self.idCredit = __idCreditStr__
-        self.useLimit = __license__
+        self.useLimit = f'\n\n {__data_restrictions__} \n {__license__}'
         self.formatName = __formatName__
         self.mdDateSt = __version_date__
         
@@ -2070,4 +2151,210 @@ class create_service_level_dataset(object):
     
     #------------------------------------------------------------------------
 
+
+#----------------------------------------------------------------------------
+        
+class create_fabric_features(object):
+    def __init__(self):
+        """Define the tool (tool name is BroadbandDataJoin)"""
+        self.label = "1. Create Location Fabric BSL Features"
+        self.alias = "createLocationFabricBslFeatures"
+
+        self.description = __tools__[1]
+        self.usage = f"""{__tools__[1]}
+
+        {__orgGitHub__}
+        
+        <b>*Note:</b>
+            <em>Only location fabric records with the bsl_flag = True will be included in the output.</em>
+        
+        {__data_restrictions__}
+        """
+
+        self.CreaDate = __create_date__
+        self.ArcGISFormat = __ArcGISFormat__
+        self.SyncOnce = __SyncOnce__
+        self.ModDate = __version_date__
+        self.ArcGISProfile = __ArcGISProfile__
+        self.arcToolboxHelpPath = __github_url__
+        self.resTitle = self.alias
+        self.idPurp = self.description
+        self.searchKeys = __searchKeys__
+        self.idCredit = __idCreditStr__
+        self.useLimit = f'\n\n {__data_restrictions__} \n {__license__}'
+        self.formatName = __formatName__
+        self.mdDateSt = __version_date__
+        
+        self.default_cols = [
+                            'location_id',
+                            'fcc_rel',
+                          ]
+    #------------------------------------------------------------------------
+    def getParameterInfo(self):
+        """Define parameter definitions"""
+        params = [
+                  arcpy.Parameter(
+                      displayName="Location Fabric CSV File",
+                      name="location_fabric_csv_file",
+                      datatype="DEFile",
+                      parameterType="Required",
+                      direction="Input"
+                  ),                      
+                  arcpy.Parameter(
+                      displayName="Output Workspace",
+                      name="output_workspace",
+                      datatype="DEWorkspace",
+                      parameterType="Optional",
+                      direction="Input"
+                  ),
+                  arcpy.Parameter(
+                      displayName="Output Name",
+                      name="output_name",
+                      datatype="GPString",
+                      parameterType="Optional",
+                      direction="Input"
+                  ),
+                  arcpy.Parameter(
+                      displayName="Output Columns",
+                      name="keep_cols",
+                      datatype="GPString",
+                      parameterType="Required",
+                      direction="Input",
+                      multiValue="True"
+                  )
+                  
+                  ]
+
+        # set default values & filters:
+        params[1].value = get_default_gdb()
+        params[3].filter.list = self.default_cols
+        params[3].value = self.default_cols
+        
+        return params
+
+    #------------------------------------------------------------------------
+    
+    def isLicensed(self):
+        """The tool is licensed"""
+        return True
+
+    #------------------------------------------------------------------------
+    
+    def updateParameters(self, parameters):
+        # set the output workspark/gdb    
+        if not bool(parameters[1].value):
+            parameters[1].value = get_default_gdb
+               
+        if parameters[0].altered and not parameters[0].hasBeenValidated:
+            try:
+                csv_cols = list(pd.read_csv(parameters[0].valueAsText,
+                                            nrows=1
+                                            ).columns)
+                parameters[3].filter.list = csv_cols 
+                parameters[3].value = self.default_cols
+            except:
+                pass
+                parameters[3].value = self.default_cols
+                
+        if parameters[3].altered and not parameters[3].hasBeenValidated:
+            if parameters[3].value:
+                cols = (parameters[3].valueAsText).split(";")
+            else:
+                cols = self.default_cols
+                parameters[3].value = self.default_cols
+                parameters[3].setWarningMessage(
+                    f'{",".join(self.default_cols)} are required ouput columns!')
+                
+        return
+
+    #------------------------------------------------------------------------
+    
+    def updateMessages(self, parameters):
+        """Update the tool messages"""
+        if parameters[0].altered and not parameters[0].hasBeenValidated:
+            if not (parameters[0].valueAsText).endswith('.csv'):
+                    parameters[0].setErrorMessage('Unable to read file, must be a CSV')
+            else:
+                parameters[0].clearMessage()
+        else:
+            parameters[0].clearMessage()
+
+        return
+
+    #------------------------------------------------------------------------
+    
+    def execute(self, parameters, messages):
+        """Execute the tool"""
+        try:
+
+            # gather params
+            loc_fab_path = parameters[0].valueAsText
+            wksp = parameters[1].valueAsText
+            out_name = parameters[2].valueAsText
+            include_cols = (parameters[3].valueAsText).split(";")
+
+            # set the output file name
+            out_name, ext = os.path.splitext(
+                                os.path.basename(
+                                    parameters[0].valueAsText))
+
+            # make sure the output name is valid
+            out_name = get_default_output_name([out_name],
+                                                wksp)
+
+            # determine the workspace type and which file extensions are needed
+            wksp_type = arcpy.Describe(wksp).workspaceType
+            if wksp_type == 'FileSystem':
+                if not out_name.lower().endswith('.shp'):
+                    out_name = f'{out_name}.shp'
+       
+            # set the output path            
+            out_path = os.path.join(wksp, out_name)
+            
+            # set the output alias
+            output_alias = f'Location Fabric'
+
+            req_cols = ['latitude','longitude']
+
+            read_cols = list(set(req_cols + include_cols))
+            location_fabric_df = read_location_fabric(loc_fab_path=loc_fab_path,
+                                                      columns=read_cols,
+                                                      bsl_flag=True)
+                        
+            # Convert a dataframe (bsl_max_srvc_lvls_df) to a spatial dataframe
+            sdf = pd.DataFrame.spatial.from_xy(df=location_fabric_df,
+                                               x_column='longitude',
+                                               y_column='latitude',
+                                               sr=4326)
+            sdf = sdf[include_cols]
+            # Save to feature class 
+            sdf.spatial.to_featureclass(location=out_path,
+                                        overwrite=True)
+
+            # clear up memory
+            clean_df_memory([location_fabric_df])
+            
+            # set the item alias for gdb items
+            if wksp_type != 'FileSystem':
+                arcpy.AlterAliasName(out_path, output_alias)
+
+            arcpy.AddMessage(f'Results saved to: {out_path}')
+
+        except InvalidFabric:
+            arcpy.AddError('''Fields to generate location fabric features''')
+       
+        except:
+            # Catch any other default errors 
+            e = sys.exc_info()[1]
+            arcpy.AddError(e)
+          
+    #------------------------------------------------------------------------
+
+    def postExecute(self, parameters):
+        """This method takes place after outputs are processed and
+        added to the display."""
+        return
+    
+    #------------------------------------------------------------------------
+# generate toolbox and tool xml metadata files
 tb_meta = create_tb_meta(__file__, True)
