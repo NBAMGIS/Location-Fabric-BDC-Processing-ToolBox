@@ -20,9 +20,11 @@
 
 ## Included Tools:
 
-### 1. Create Location Fabric BSL Features:
-#### Tool Overview:      
-   - *Creates a point layer from a location fabric dataset using user specified fields for output.  The input data must be a CSV file containing the CostQuest fabric locations to be analyzed.*
+<details>
+<summary><b>1. Create Location Fabric BSL Features: </b><em>(expand for details)</em></summary>
+   
+#### Overview:      
+   - *Creates a point layer from a location fabric dataset using user specified fields for output.  The input data **must be a CSV file** containing the CostQuest fabric locations to be analyzed.*
 
       - **Notes:**
    
@@ -31,7 +33,7 @@
       - **Data Restrictions:**
          - *Prior to sharing results, please verify the output dataset fields/columns meet the distribution requirements in accordance with your organization’s signed license agreement with CostQuest Associates.*
          - *See: [Why Do I Need a Fabric License?](https://help.bdc.fcc.gov/hc/en-us/articles/10419121200923-How-Entities-Can-Access-the-Location-Fabric-)*
-#### Tool Code Sample:  
+#### Code Sample:  
 ```python
 # import the toolbox as a module
 import arcpy
@@ -46,10 +48,14 @@ result = arcpy.arcpy.create_fabric_features_LocationFabricAndBDCProcessingToolBo
                                    keep_cols                   #Output Columns- Type(String)
                                    )
 ```
+</details>
+
 ---
 
-### 4. Create Service Level Dataset:
-#### Tool Overview:        
+<details>
+<summary><b>2. Create Service Level Dataset: </b><em>(expand for details)</em></summary>
+
+#### Overview:        
    - *Creates a point layer or table representing the highest reported service levels defined by NTIA BEAD program as reliable technologies which include Copper Wire, Coaxial Cable/HFC, Optical Carrier/Fiber to the Premises, Licensed Terrestrial Fixed Wireless and, Licensed-by-Rule Terrestrial Fixed Wireless.
     The input data **must be a CSV file** containing the CostQuest fabric locations to be analyzed. The outputs can be a spatial dataset (Featureclass or shapefile) or a table (GDB table or CSV).
     For spatial outputs, using a GDB featureclass rather than a shapefile will have better results as there are size restrictions (2 GB) and limits the column name length of shapefiles. The output data will contain the selected fabric columns and the resultant service level data.*
@@ -62,7 +68,7 @@ result = arcpy.arcpy.create_fabric_features_LocationFabricAndBDCProcessingToolBo
          - *Prior to sharing results, please verify the output dataset fields/columns meet the distribution requirements in accordance with your organization’s signed license agreement with CostQuest Associates.*
          - *See: [Why Do I Need a Fabric License?](https://help.bdc.fcc.gov/hc/en-us/articles/10419121200923-How-Entities-Can-Access-the-Location-Fabric-)*         
 
-#### Tool Methodology:
+#### Methodology:
    - **Service Level Criteria:**
      
       - **How does the BEAD program define an “unserved” location?**
@@ -71,7 +77,7 @@ result = arcpy.arcpy.create_fabric_features_LocationFabricAndBDCProcessingToolBo
          - *See: [BEAD FAQ’s](https://broadbandusa.ntia.gov/sites/default/files/2022-06/BEAD-FAQs.pdf)*             
 
       - **How does the BEAD program define an “underserved” location?**
-    Section I.C.cc. of the NOFO defines underserved locations as locations that are identified as having access to reliable broadband service ofat least 25 Mbps downstream/3 Mbps upstream but less than 100 Mbps downstream/20 Mbps upstream at a latency of 100 milliseconds or less. Reliable broadband means broadband service that the Broadband DATA Maps show is accessible to a location via fiber-optic technology; Cable Modem/Hybrid fiber-coaxial technology; digital subscriber line technology; or terrestrial fixed wireless technology utilizing entirely licensed spectrum or using a hybrid of licensed and unlicensed spectrum.* 
+         - *Section I.C.cc. of the NOFO defines underserved locations as locations that are identified as having access to reliable broadband service of at least 25 Mbps downstream/3 Mbps upstream but less than 100 Mbps downstream/20 Mbps upstream at a latency of 100 milliseconds or less. Reliable broadband means broadband service that the Broadband DATA Maps show is accessible to a location via fiber-optic technology; Cable Modem/Hybrid fiber-coaxial technology; digital subscriber line technology; or terrestrial fixed wireless technology utilizing entirely licensed spectrum or using a hybrid of licensed and unlicensed spectrum.* 
 
          - *See: [BEAD FAQ’s](https://broadbandusa.ntia.gov/sites/default/files/2022-06/BEAD-FAQs.pdf)*      
 
@@ -94,7 +100,7 @@ result = arcpy.arcpy.create_fabric_features_LocationFabricAndBDCProcessingToolBo
          - 
    - See: [FCC's Data Spec. for BDC Public Data Downloads](https://us-fcc.app.box.com/v/bdc-data-downloads-output)
 
-#### Tool Code Sample:  
+#### Code Sample:  
 ```python
 # import the toolbox as a module
 import arcpy
@@ -109,6 +115,8 @@ result = arcpy.create_service_level_dataset_LocationFabricAndBDCProcessingToolBo
                     keep_cols                   #Output Columns- Type(String)
                     )
 ```
+
+</details>
     
 ---
 
