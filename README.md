@@ -38,10 +38,10 @@ The Location Fabric BDC Processing Toolbox is a collection of ArcGIS python tool
 This toolbox was developed and tested with ArcGIS Pro v3.0.0. 
 
 ### ArcGIS version:
-   - Tested and developed with 3.0+.
-   - 
+   - Tested and developed with 3.0+
+     
 ### Python version:
-   - Tested and developed with 3.7+.
+   - Tested and developed with 3.7+
      
 #### Python dependancies:
    - pandas
