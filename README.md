@@ -98,7 +98,7 @@ result = arcpy.arcpy.create_fabric_features_LocationFabricAndBDCProcessingToolBo
          - Unserved: Speeds below 25/3 Mbps or NULL OR without low_latency (low_latency=0)
          - Underserved: Speeds at or above 25/3 Mbps, but Below 100/20 Mbps with low_latency (low_latency=1)
          - Served: Service Level at or above 100/20 Mbps with low_latency (low_latency=1)
-         - 
+         
    - See: [FCC's Data Spec. for BDC Public Data Downloads](https://us-fcc.app.box.com/v/bdc-data-downloads-output)
 
 #### Code Sample:  
