@@ -12,20 +12,17 @@ The Location Fabric BDC Processing Toolbox is a collection of ArcGIS python tool
 
 #### Included Tools:
 
-    1. Create Location Fabric BSL Features:
-        
-        Creates a point layer from a location fabric dataset using
-        user specified fields for output.
+1. Create Location Fabric BSL Features:
+    Creates a point layer from a location fabric dataset using user specified fields for output.
+
+    **Note: Only location fabric records with the bsl_flag = True will be included in the output.**
         
 
-    2. Create Service Level Dataset:
+4. Create Service Level Dataset:
         
-        Creates a point layer or table representing the highest
-        reported service levels defined by NTIA BEAD program as
-        reliable technologies which include Copper Wire, Coaxial
-        Cable/HFC, Optical Carrier/Fiber to the Premises,
-        Licensed Terrestrial Fixed Wireless and, Licensed-by-Rule
-        Terrestrial Fixed Wireless.
+    Creates a point layer or table representing the highest reported service levels defined by NTIA BEAD program as reliable technologies which include Copper Wire, Coaxial Cable/HFC, Optical Carrier/Fiber to the Premises, Licensed Terrestrial Fixed Wireless and, Licensed-by-Rule Terrestrial Fixed Wireless.
+
+    **Note: Only location fabric records with the bsl_flag = True will be included in the output.**
 
 
 ## Quick Start:
