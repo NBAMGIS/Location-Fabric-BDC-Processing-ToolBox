@@ -30,7 +30,7 @@ The Location Fabric BDC Processing Toolbox is a collection of ArcGIS python tool
 
 ## Quick Start:
 
-   - See ArcGIS Pro documentation on adding a python toolbox to a project.
+   - See: [Add an existing toolbox to a project](https://pro.arcgis.com/en/pro-app/latest/help/projects/connect-to-a-toolbox.htm#:~:text=use%20its%20tools.-,Add%20an%20existing%20toolbox%20to%20a%20project,-You%20can%20add)
 ---
 
 ## Environment/Dependencies:
