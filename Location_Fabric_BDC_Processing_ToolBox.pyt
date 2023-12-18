@@ -514,7 +514,7 @@ def get_fcc_bdc_data(fabric_version, state, tech_codes=None,
         # set the default headers for the FCC Broadband Map Download homepage
         headers =   {
                     "accept": "text/html",
-                    "User-Agent": "ArcGIS Python- ",
+                    "User-Agent": "ArcGIS Python - Location_Fabric_BDC_Processing_ToolBox.pyt",
                     }
         # set the base URL to the FCC Broadband Map Download API
         api_base_url = r'https://broadbandmap.fcc.gov/nbm/map/api'
