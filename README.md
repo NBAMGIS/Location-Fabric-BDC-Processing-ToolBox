@@ -21,8 +21,7 @@
 
 ## Included Tools:
 
-<details>
-<summary><b>1. Create Location Fabric BSL Features: </b><em>(expand for details)</em></summary>
+### 1. Create Location Fabric BSL Features:
 
    
 #### Overview:      
@@ -51,12 +50,10 @@ result = arcpy.arcpy.create_fabric_features_LocationFabricAndBDCProcessingToolBo
                                    keep_cols                   #Output Columns- Type(String)
                                    )
 ```
-</details>
 
 ---
 
-<details>
-<summary><b>2. Create Service Level Dataset: </b><em>(expand for details)</em></summary>
+### 2. Create Service Level Dataset:
 
 #### Overview:        
    - *Creates a point layer or table representing the highest reported service levels defined by NTIA BEAD program as reliable technologies which include Copper Wire, Coaxial Cable/HFC, Optical Carrier/Fiber to the Premises, Licensed Terrestrial Fixed Wireless and, Licensed-by-Rule Terrestrial Fixed Wireless.
@@ -119,7 +116,6 @@ result = arcpy.create_service_level_dataset_LocationFabricAndBDCProcessingToolBo
                     )
 ```
 
-</details>
     
 ---
 
