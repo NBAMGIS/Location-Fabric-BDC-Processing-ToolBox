@@ -131,7 +131,7 @@ This toolbox was developed and tested with ArcGIS Pro v3.0.0.
 ### Python version:
    - Tested and developed with 3.7+
      
-#### Python dependancies:
+#### Python dependencies:
    - pandas
 
 ---
