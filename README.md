@@ -23,6 +23,7 @@
 
 <details>
 <summary><b>1. Create Location Fabric BSL Features: </b><em>(expand for details)</em></summary>
+
    
 #### Overview:      
    - *Creates a point layer from a location fabric dataset using user specified fields for output.  The input data **must be a CSV file** containing the CostQuest fabric locations to be analyzed.*
@@ -34,6 +35,7 @@
       - **Data Restrictions:**
          - *Prior to sharing results, please verify the output dataset fields/columns meet the distribution requirements in accordance with your organization’s signed license agreement with CostQuest Associates.*
          - *See: [Why Do I Need a Fabric License?](https://help.bdc.fcc.gov/hc/en-us/articles/10419121200923-How-Entities-Can-Access-the-Location-Fabric-)*
+           
 #### Code Sample:  
 ```python
 # import the toolbox as a module
