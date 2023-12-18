@@ -74,11 +74,12 @@ result = arcpy.arcpy.create_fabric_features_LocationFabricAndBDCProcessingToolBo
       - **How does the BEAD program define an “unserved” location?**
    
          - *Section I.C.bb. of the NOFO defines unserved locations as locations lacking reliable broadband service or with broadband service offering speeds below 25 megabits per second (Mbps) downstream/3 Mbps upstream at a latency of 100 milliseconds or less. Reliable broadband means broadband service that the Broadband DATA Maps show is accessible to a location via fiber-optic technology; Cable Modem/ Hybrid fiber-coaxial technology; digital subscriber line technology; or terrestrial fixed wireless technology utilizing entirely licensed spectrum or using a hybrid of licensed and unlicensed spectrum. Locations that are served by satellite or purely unlicensed spectrum will also be considered unserved.*
+           
          - *See: [BEAD FAQ’s](https://broadbandusa.ntia.gov/sites/default/files/2022-06/BEAD-FAQs.pdf)*             
 
       - **How does the BEAD program define an “underserved” location?**
-         - *Section I.C.cc. of the NOFO defines underserved locations as locations that are identified as having access to reliable broadband service of at least 25 Mbps downstream/3 Mbps upstream but less than 100 Mbps downstream/20 Mbps upstream at a latency of 100 milliseconds or less. Reliable broadband means broadband service that the Broadband DATA Maps show is accessible to a location via fiber-optic technology; Cable Modem/Hybrid fiber-coaxial technology; digital subscriber line technology; or terrestrial fixed wireless technology utilizing entirely licensed spectrum or using a hybrid of licensed and unlicensed spectrum.* 
-
+         - *Section I.C.cc. of the NOFO defines underserved locations as locations that are identified as having access to reliable broadband service of at least 25 Mbps downstream/3 Mbps upstream but less than 100 Mbps downstream/20 Mbps upstream at a latency of 100 milliseconds or less. Reliable broadband means broadband service that the Broadband DATA Maps show is accessible to a location via fiber-optic technology; Cable Modem/Hybrid fiber-coaxial technology; digital subscriber line technology; or terrestrial fixed wireless technology utilizing entirely licensed spectrum or using a hybrid of licensed and unlicensed spectrum.*
+           
          - *See: [BEAD FAQ’s](https://broadbandusa.ntia.gov/sites/default/files/2022-06/BEAD-FAQs.pdf)*      
 
    - **Applied Service Level Criteria:**
