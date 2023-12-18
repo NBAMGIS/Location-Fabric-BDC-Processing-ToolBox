@@ -14,8 +14,8 @@
 
 ## Quick Start:
 
-   1. Download ArcGIS Python Toolbox:  [Location_Fabric_BDC_Processing_ToolBox.pyt](https://github.com/ahamptonTIA/Location_Fabric_BDC_Processing_ToolBox/blob/main/Location_Fabric_BDC_Processing_ToolBox.pyt)
-   2. See: [Add an existing toolbox to a project](https://pro.arcgis.com/en/pro-app/latest/help/projects/connect-to-a-toolbox.htm#:~:text=use%20its%20tools.-,Add%20an%20existing%20toolbox%20to%20a%20project,-You%20can%20add)
+   1. [Download the ArcGIS Python Toolbox](./Location_Fabric_BDC_Processing_ToolBox.pyt)
+   3. See: [Add an existing toolbox to a project](https://pro.arcgis.com/en/pro-app/latest/help/projects/connect-to-a-toolbox.htm#:~:text=use%20its%20tools.-,Add%20an%20existing%20toolbox%20to%20a%20project,-You%20can%20add)
 
 ---
 
