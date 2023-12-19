@@ -47,7 +47,7 @@ result = arcpy.arcpy.create_fabric_features_LocationFabricAndBDCProcessingToolBo
                                    location_fabric_csv_file,    #Location Fabric CSV File- Type(File)
                                    output_workspace,            #Output Workspace- Type(Workspace)
                                    output_name,                 #Output Name- Type(String)
-                                   keep_cols                   #Output Columns- Type(String)
+                                   keep_cols                    #Output Columns- Type(String)
                                    )
 ```
 
