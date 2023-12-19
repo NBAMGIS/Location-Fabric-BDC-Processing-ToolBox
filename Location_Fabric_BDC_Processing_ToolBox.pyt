@@ -7,7 +7,7 @@ __name__            = 'Location_Fabric_BDC_Processing_ToolBox'
 __alias__           = 'Location Fabric And BDC Processing ToolBox'
 __author__          = 'ahamptonTIA'
 __credits__         = [__author__]
-__version__         = '0.0.5'
+__version__         = '0.0.6'
 __maintainer__      = __author__
 __email__           = 'https://github.com/ahamptonTIA'
 __org__             = 'National Telecommunications and Information Administration (NTIA)'
@@ -17,7 +17,7 @@ __orgGitHub__       = 'https://nbamgis.github.io/NTIA-Performance-and-Data-Analy
 __github_url__      = f'https://github.com/{__author__}/{__name__}'
 __status__          = 'Beta'
 __create_date__     = '20231011'  
-__version_date__    = '20231213'
+__version_date__    = '20231219'
 __ArcGISFormat__    = '1.0'
 __searchKeys__      = ['BDC', 'Location Fabric', 'NTIA', 'FCC']
 __idCreditStr__     = f'''<b>Point of Contact (POC):</b> {__subOrg__}
@@ -92,7 +92,7 @@ __tools__ = [
 
 
 import os, sys, gc, re, time, requests, warnings
-import datetime, json, tempfile, arcpy, inspect
+import json, tempfile, arcpy, inspect
 import pandas as pd
 import arcgis
 from arcgis.features import GeoAccessor, GeoSeriesAccessor
@@ -100,7 +100,7 @@ from arcgis.features import GeoAccessor, GeoSeriesAccessor
 import importlib.util
 from pathlib import Path
 from collections import OrderedDict
-from datetime import datetime
+from datetime import datetime 
 from xml.etree.ElementTree import \
      ElementTree as et_root, \
      Element as et_elm, \
@@ -280,7 +280,7 @@ def get_state_fabric_versions(csv):
             c_uv = uv_df[['state_fips','fcc_rel']].to_dict('records')
 
             for d in c_uv:
-                d['fcc_rel'] = datetime.datetime.strptime(
+                d['fcc_rel'] = datetime.strptime(
                                     str(d['fcc_rel']).zfill(8), '%m%d%Y')
                 
                 if d not in u_vals:
@@ -538,7 +538,7 @@ def get_fcc_bdc_data(fabric_version, state, tech_codes=None,
                                                     )
         
         # get the process uuid based on the location fabric date
-        filing_dict = {datetime.datetime.strptime(l['filing_subtype'], "%B %d, %Y"):
+        filing_dict = {datetime.strptime(l['filing_subtype'], "%B %d, %Y"):
                     l['process_uuid']
                     for l in response.json()['data']}
 
@@ -564,7 +564,7 @@ def get_fcc_bdc_data(fabric_version, state, tech_codes=None,
                                                     )
 
                                    
-        bdc_date = datetime.datetime.strptime(response.json()['data'][0]['last_updated_date'],
+        bdc_date = datetime.strptime(response.json()['data'][0]['last_updated_date'],
                                               "%Y-%m-%dT%H:%M:%S.%fZ"
                                               )
 
@@ -749,7 +749,9 @@ def read_location_fabric(loc_fab_path, columns=None, bsl_flag=True):
 
     # Filter to ensure only BSL's are included in the analysis
     if bsl_flag: 
-        location_fabric_df = location_fabric_df[location_fabric_df['bsl_flag']=='True']   
+        location_fabric_df = location_fabric_df[
+                            location_fabric_df['bsl_flag'].str.lower()
+                            =='true']   
 
     location_fabric_df = location_fabric_df[columns]
     # Print a count  of BSL records
