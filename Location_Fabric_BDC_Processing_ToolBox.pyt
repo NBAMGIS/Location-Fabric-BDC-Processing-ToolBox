@@ -7,7 +7,7 @@ __name__            = 'Location_Fabric_BDC_Processing_ToolBox'
 __alias__           = 'Location Fabric And BDC Processing ToolBox'
 __author__          = 'ahamptonTIA'
 __credits__         = [__author__]
-__version__         = '0.0.6'
+__version__         = '0.0.7'
 __maintainer__      = __author__
 __email__           = 'https://github.com/ahamptonTIA'
 __org__             = 'National Telecommunications and Information Administration (NTIA)'
@@ -17,7 +17,7 @@ __orgGitHub__       = 'https://nbamgis.github.io/NTIA-Performance-and-Data-Analy
 __github_url__      = f'https://github.com/{__author__}/{__name__}'
 __status__          = 'Beta'
 __create_date__     = '20231011'  
-__version_date__    = '20231219'
+__version_date__    = '20231220'
 __ArcGISFormat__    = '1.0'
 __searchKeys__      = ['BDC', 'Location Fabric', 'NTIA', 'FCC']
 __idCreditStr__     = f'''<b>Point of Contact (POC):</b> {__subOrg__}
@@ -2331,7 +2331,8 @@ class create_fabric_features(object):
                                                x_column='longitude',
                                                y_column='latitude',
                                                sr=4326)
-            sdf = sdf[include_cols]
+            # Ensure the geometry column is included
+            sdf = sdf[include_cols + ['SHAPE']]
             # Save to feature class 
             sdf.spatial.to_featureclass(location=out_path,
                                         overwrite=True)
