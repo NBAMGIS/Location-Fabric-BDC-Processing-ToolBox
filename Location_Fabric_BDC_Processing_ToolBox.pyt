@@ -2,12 +2,12 @@
 #------------------------------------------------------------------------------
 
 # toolbox metadata
-__formatName__      = 'ArcToolbox Toolbox'
 __name__            = 'Location_Fabric_BDC_Processing_ToolBox'
 __alias__           = 'Location Fabric And BDC Processing ToolBox'
+__formatName__      = 'ArcToolbox Toolbox'
 __author__          = 'ahamptonTIA'
 __credits__         = [__author__]
-__version__         = '0.0.7'
+__version__         = '0.0.8'
 __maintainer__      = __author__
 __email__           = 'https://github.com/ahamptonTIA'
 __org__             = 'National Telecommunications and Information Administration (NTIA)'
@@ -17,7 +17,7 @@ __orgGitHub__       = 'https://nbamgis.github.io/NTIA-Performance-and-Data-Analy
 __github_url__      = f'https://github.com/{__author__}/{__name__}'
 __status__          = 'Beta'
 __create_date__     = '20231011'  
-__version_date__    = '20231220'
+__version_date__    = '20231221'
 __ArcGISFormat__    = '1.0'
 __searchKeys__      = ['BDC', 'Location Fabric', 'NTIA', 'FCC']
 __idCreditStr__     = f'''<b>Point of Contact (POC):</b> {__subOrg__}
@@ -2191,9 +2191,8 @@ class create_fabric_features(object):
         self.mdDateSt = __version_date__
         
         self.default_cols = [
-                            #'location_id',
                             'fcc_rel',
-                          ]
+                            ]
     #------------------------------------------------------------------------
     def getParameterInfo(self):
         """Define parameter definitions"""
