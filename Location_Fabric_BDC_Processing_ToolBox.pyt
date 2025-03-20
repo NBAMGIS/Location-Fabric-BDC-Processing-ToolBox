@@ -7,7 +7,7 @@ __alias__           = 'Location Fabric And BDC Processing ToolBox'
 __formatName__      = 'ArcToolbox Toolbox'
 __author__          = 'ahamptonTIA'
 __credits__         = [__author__]
-__version__         = '0.0.8'
+__version__         = '1.0.0'
 __maintainer__      = __author__
 __email__           = 'https://github.com/ahamptonTIA'
 __org__             = 'National Telecommunications and Information Administration (NTIA)'
@@ -17,7 +17,7 @@ __orgGitHub__       = 'https://nbamgis.github.io/NTIA-Performance-and-Data-Analy
 __github_url__      = 'https://github.com/NBAMGIS/Location-Fabric-BDC-Processing-ToolBox'
 __status__          = 'Beta'
 __create_date__     = '20231011'  
-__version_date__    = '20231221'
+__version_date__    = '2025032025'
 __ArcGISFormat__    = '1.0'
 __searchKeys__      = ['BDC', 'Location Fabric', 'NTIA', 'FCC']
 __idCreditStr__     = f'''<b>Point of Contact (POC):</b> {__subOrg__}
@@ -106,6 +106,18 @@ from xml.etree.ElementTree import \
      Element as et_elm, \
      SubElement as et_se
 
+_default_headers_ = {
+            'User-Agent': 'python-requests',
+            "accept": "text/html",
+            "accept-language": "en-US,en;q=0.9",
+            "priority": "u=1, i",
+            "sec-ch-ua": "\"Chromium\";v=\"134\", \"Not:A-Brand\";v=\"24\", \"Google Chrome\";v=\"134\"",
+            "sec-ch-ua-mobile": "?0",
+            "sec-ch-ua-platform": "\"Windows\"",
+            "sec-fetch-dest": "empty",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-site": "same-origin"
+            }
 #----------------------------------------------------------------------------
 
 def clean_df_memory(df):
@@ -379,6 +391,8 @@ def request_handler(url, headers=None, ip_session=None, debug=True):
         session=requests.session()
     else:
         session = ip_session
+    if not headers:
+        headers = _default_headers_
     try:   
         resp = session.get(url, headers=headers)
         resp.raise_for_status()
@@ -449,7 +463,8 @@ def download_zip(url, out_path, headers=None, session=None, chunk_size=128, debu
         None                                   
     """    
 
-
+    if not headers:
+        headers = _default_headers_
     try:
         if debug:
             arcpy.AddMessage(f'\t-Requesting data from: {url}')
@@ -512,10 +527,7 @@ def get_fcc_bdc_data(fabric_version, state, tech_codes=None,
         if not _session:
             _session = requests.session()
         # set the default headers for the FCC Broadband Map Download homepage
-        headers =   {
-                    "accept": "text/html",
-                    "User-Agent": "ArcGIS Python - Location_Fabric_BDC_Processing_ToolBox.pyt",
-                    }
+        headers = _default_headers_
         # set the base URL to the FCC Broadband Map Download API
         api_base_url = r'https://broadbandmap.fcc.gov/nbm/map/api'
         # set the URL to the FCC Broadband Map Download API filing data request
